@@ -33,6 +33,14 @@
 
 ---
 
+## 作者正在寻找工作机会
+
+作者目前关注腾讯等大型科技企业在深圳的 AI 相关岗位，希望加入一支热爱 AI 开发的团队，继续从事 AI / Agent 产品开发、应用落地及 AI 咨询工作。
+
+联系：[simonlin0423@gmail.com](mailto:simonlin0423@gmail.com)
+
+---
+
 ## 为什么做这个 Fork
 
 原版 TradingAgents 是一个出色的多 Agent 投研框架，但它针对美股设计：数据走 Yahoo Finance / Alpha Vantage，分析师不懂 A 股制度，辩论和决策完全面向美股市场。

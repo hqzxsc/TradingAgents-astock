@@ -33,6 +33,14 @@
 
 ---
 
+## The Author Is Open to Opportunities
+
+The author is open to AI roles at Tencent and other leading technology companies in Shenzhen, and hopes to join a team passionate about AI development. Areas of interest include AI / Agent product development, real-world deployment, and AI consulting.
+
+Contact: [simonlin0423@gmail.com](mailto:simonlin0423@gmail.com)
+
+---
+
 ## Why This Fork
 
 The original TradingAgents is an excellent multi-agent research framework, but it's designed for the US stock market: data comes from Yahoo Finance / Alpha Vantage, analysts don't understand the A-share system, and the debates and decision-making are entirely geared toward the US market.
