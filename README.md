@@ -213,7 +213,9 @@ BACKEND_URL=https://your-relay.example/v1   # 你的网关地址（也可在 Web
 
 ### 3. 运行分析
 
-根据你选择的供应商修改 config：
+新建一个 Python 文件（比如项目根目录下的 `run.py`），把下面这段粘进去，按你选的供应商改 `config` 后运行 `uv run python run.py`。根目录自带的 `main.py` 就是这个示例的可运行版本，直接 `uv run python main.py` 也行。
+
+> `config` 不是仓库里的某个配置文件，而是传给 `TradingAgentsGraph(config=...)` 的一个字典：只写你要覆盖的项，其余项自动取 `tradingagents/default_config.py` 里的默认值（完整可选项见下文「配置说明」一节）。
 
 ```python
 from tradingagents.graph.trading_graph import TradingAgentsGraph

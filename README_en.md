@@ -200,7 +200,9 @@ BACKEND_URL=https://your-relay.example/v1   # Your gateway URL (can also be set 
 
 ### 3. Run Analysis
 
-Modify the configuration based on your chosen provider:
+Create a Python file (e.g. `run.py` in the project root), paste the snippet below, adjust `config` for your provider, then run `uv run python run.py`. The bundled `main.py` in the project root is a runnable copy of this example — `uv run python main.py` works too.
+
+> `config` is not a file in the repo. It is a plain dict passed to `TradingAgentsGraph(config=...)`: list only the keys you want to override; everything else falls back to the defaults in `tradingagents/default_config.py` (full option list in the configuration section below).
 
 ```python
 from tradingagents.graph.trading_graph import TradingAgentsGraph

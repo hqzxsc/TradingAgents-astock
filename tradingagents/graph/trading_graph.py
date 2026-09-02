@@ -139,6 +139,21 @@ def _is_unsupported_by_yfinance(symbol: str) -> bool:
     )
 
 
+def merge_config(config: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+    """用户传入的 config 是**覆盖项**，不是完整配置：缺的键一律取 DEFAULT_CONFIG。
+
+    README 快速开始的示例只给 4 个键（llm_provider / 两个模型 / output_language）。
+    此前这里是 ``config or DEFAULT_CONFIG`` —— 整体替换、不合并，紧接着
+    ``os.makedirs(config["data_cache_dir"])`` 就 KeyError，照 README 粘贴即崩（#101）。
+    dataflows 层的 set_config() 本来就是合并语义，这里与之对齐。
+    浅合并：嵌套字典（如 role_llms）按用户给的整份为准。
+    """
+    merged = DEFAULT_CONFIG.copy()
+    if config:
+        merged.update(config)
+    return merged
+
+
 class TradingAgentsGraph:
     """Main class that orchestrates the trading agents framework."""
 
@@ -158,7 +173,7 @@ class TradingAgentsGraph:
             callbacks: Optional list of callback handlers (e.g., for tracking LLM/tool stats)
         """
         self.debug = debug
-        self.config = config or DEFAULT_CONFIG
+        self.config = merge_config(config)
         self.callbacks = callbacks or []
 
         # Update the interface's config
