@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Breaking changes within the 0.x line are called out explicitly.
 
+## [0.5.16] — 2026-09-02
+
+### 修复：只传部分 `config` 时 `TradingAgentsGraph` 直接 KeyError（#101）
+
+README「快速开始 · 3. 运行分析」的示例只给了 4 个键（`llm_provider` / 两个模型 / `output_language`），
+而 `TradingAgentsGraph.__init__` 里是 `config or DEFAULT_CONFIG` —— 整体替换、不合并，紧接着
+`os.makedirs(config["data_cache_dir"])` 就抛 `KeyError: 'data_cache_dir'`。照 README 粘贴即崩。
+
+- `TradingAgentsGraph` 现在把传入的 `config` 当**覆盖项**与 `DEFAULT_CONFIG` 浅合并（新增 `merge_config()`），
+  与 dataflows 层 `set_config()` 一直以来的合并语义对齐。传完整 config 的用户行为不变。
+- README 中英文说清 `config` 是传给 `TradingAgentsGraph(config=...)` 的字典、不是仓库里的配置文件，
+  以及这段代码该放在哪个文件里运行；根目录 `main.py` 从上游残留的 NVDA / yfinance 示例改成与 README
+  一致、可直接运行的 A 股示例。
+- 新增 `tests/test_partial_config.py`。
+
 ## [0.5.15] — 2026-08-19
 
 ### 新增：`role_llms` 支持按角色配置 `api_key`（#94）
