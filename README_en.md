@@ -290,6 +290,7 @@ Open your browser and navigate to `http://localhost:8501`.
 
 ### Features
 
+- **Remembers your setup**: the provider / models / Base URL / subscription scope chosen in the sidebar are written to `~/.tradingagents/llm_config.json` and restored after reopening the tab or restarting (v0.5.17)
 - **Model Selection**: Sidebar supports switching between 10 LLM providers (MiniMax/DeepSeek/Qwen/GLM/OpenAI/Anthropic/Google/xAI/OpenRouter/Ollama), plus **"OpenAI Compatible (custom base_url)"** for connecting to any OpenAI-compatible gateway (9Router / AI Router / self-hosted proxy)
 - **One-Click Analysis**: Enter a 6-digit A-share stock code + analysis date + "Data Start Date" (defaults to the first day of the current month, allows customizing the technical analysis lookback period, supports monthly/custom period analysis), then click "Start Analysis"
 - **Real-Time Progress**: 12-stage pipeline displayed in real-time (7 Analysts → Quality Gate → Debate → Risk Control → Decision), with expandable reports for all completed stages

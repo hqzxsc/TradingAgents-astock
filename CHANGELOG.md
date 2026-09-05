@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Breaking changes within the 0.x line are called out explicitly.
 
+## [0.5.17] — 2026-09-05
+
+### 新增：Web UI 记住 LLM 配置（#96，by @WenhuaXia）
+
+此前侧栏的供应商 / 快速·深度模型 / API Base URL / 订阅覆盖 / 自定义模型 ID 只存在 `st.session_state`，
+关掉标签页就回到默认的 MiniMax。现在点「开始分析」时把这组选择写入 `~/.tradingagents/llm_config.json`，
+页面加载时用 `setdefault` 恢复——不覆盖当次已经改过的选项；写盘失败（目录只读 / 磁盘满）只记 warning，
+不打断分析。
+
+- 合并后补了两处：配置文件从包目录（`tradingagents/.llm_config.json`，pip 安装时落在 site-packages）
+  移到 `~/.tradingagents/`，与 logs / cache / memory 同一位置；「个人 Claude 订阅覆盖」的恢复改写
+  selectbox 的 widget 键 `subscription_scope_idx`——只回填派生值会在渲染时被覆盖回「关闭」。
+- 新增 `tests/test_llm_config_persistence.py`。
+
 ## [0.5.16] — 2026-09-02
 
 ### 修复：只传部分 `config` 时 `TradingAgentsGraph` 直接 KeyError（#101）

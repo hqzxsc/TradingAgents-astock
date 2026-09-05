@@ -24,7 +24,13 @@ logger = logging.getLogger(__name__)
 
 # ── LLM config persistence ────────────────────────────────────────────────────
 # Saves model selection to a JSON file so it survives browser tab close/reopen.
-_LLM_CONFIG_PATH = Path(DEFAULT_CONFIG["project_dir"]) / ".llm_config.json"
+# 放用户目录而不是包目录：pip 安装时包目录在 site-packages（常只读、升级即清空），
+# git clone 用户则会在仓库里多出一个未跟踪文件。~/.tradingagents/ 是本项目其它用户态
+# 数据（logs / cache / memory）已经在用的位置。
+_LLM_CONFIG_PATH = Path(os.path.expanduser("~")) / ".tradingagents" / "llm_config.json"
+# 侧栏「个人 Claude 订阅覆盖」选项的取值；selectbox 的 widget 键是 subscription_scope_idx，
+# 恢复时必须写这个索引，只写派生值 subscription_scope 会在渲染时被覆盖回默认。
+_SCOPE_VALUES = ["off", "deep", "all"]
 
 
 def _load_saved_llm_config() -> None:
@@ -42,7 +48,11 @@ def _load_saved_llm_config() -> None:
     st.session_state.setdefault("quick_model_idx", cfg.get("quick_model_idx", 0))
     st.session_state.setdefault("deep_model_idx", cfg.get("deep_model_idx", 0))
     st.session_state.setdefault("llm_base_url", cfg.get("llm_base_url", ""))
-    st.session_state.setdefault("subscription_scope", cfg.get("subscription_scope", "off"))
+    scope = cfg.get("subscription_scope", "off")
+    st.session_state.setdefault("subscription_scope", scope)
+    st.session_state.setdefault(
+        "subscription_scope_idx", _SCOPE_VALUES.index(scope) if scope in _SCOPE_VALUES else 0
+    )
     if cfg.get("agent_sdk_model"):
         st.session_state.setdefault("agent_sdk_model", cfg["agent_sdk_model"])
     for key in ("custom_quick_model", "custom_deep_model"):
@@ -67,6 +77,7 @@ def _save_llm_config() -> None:
             cfg[key] = val
     # 持久化失败（目录只读 / 磁盘满）只记 warning，不得打断「开始分析」主流程
     try:
+        _LLM_CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
         _LLM_CONFIG_PATH.write_text(json.dumps(cfg, ensure_ascii=False, indent=2))
     except OSError as exc:
         logger.warning("LLM 配置持久化失败（不影响本次分析）: %s", exc)
@@ -259,7 +270,6 @@ def _render_llm_config() -> None:
         "仅深度节点（Research/Portfolio）",
         "所有节点（含 7 个工具分析师）",
     ]
-    _scope_values = ["off", "deep", "all"]
     scope_idx = st.selectbox(
         "个人 Claude 订阅覆盖 (Agent SDK)",
         range(len(_scope_labels)),
@@ -271,7 +281,7 @@ def _render_llm_config() -> None:
             "需装 [agentsdk] 依赖，且本机 claude 已登录（或设 CLAUDE_CODE_OAUTH_TOKEN）。"
         ),
     )
-    scope = _scope_values[scope_idx]
+    scope = _SCOPE_VALUES[scope_idx]
     st.session_state["subscription_scope"] = scope
     if scope != "off":
         # 用别名而非写死版本号：claude CLI 的 opus/sonnet 恒指向最新模型。
